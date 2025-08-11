@@ -4,7 +4,9 @@ on:
   schedule:
     - cron: "*/5 * * * *"  # 매일 오후 3시 (UTC 기준 6시)
   workflow_dispatch:  # 수동 실행 가능
-
+  
+permissions:
+  contents: write 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
