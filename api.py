@@ -1,28 +1,26 @@
 import requests
-import os
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# --- 설정 ---
-# 저장될 디렉토리와 파일명을 지정합니다.
+OUTPUT_FILENAME = "test.json"
+
 def get_jsonplaceholder_info():
-    OUTPUT_FILENAME = "test.json"
-
-    # 시간 
+    # 현재 분 + 1 → 1~60 사이 값 (61이 될 경우 처리)
     current_minute = datetime.now().minute
-    TIME = current_minute + 1
-    #API URL
+    TIME = (current_minute + 1) % 60 or 60  
+
     URL = f"https://jsonplaceholder.typicode.com/todos/{TIME}"
+    response = requests.get(URL)
 
-    def get_jsonplaceholder_info():
-        response = requests.get(URL)
-        if response.status_code != 200:
-            print("API 요청 실패:", response.status_code)
-            return None
+    if response.status_code != 200:
+        print("API 요청 실패:", response.status_code)
+        return None
 
-        data = response.json()
-        with open(OUTPUT_FILENAME, "w", encoding="utf-8") as json_file:
-            json.dump(data, json_file, ensure_ascii=False)
+    data = response.json()
+    with open(OUTPUT_FILENAME, "w", encoding="utf-8") as json_file:
+        json.dump(data, json_file, ensure_ascii=False)
+
+    print(f"{OUTPUT_FILENAME} 저장 완료.")
 
 if __name__ == "__main__":
     get_jsonplaceholder_info()
